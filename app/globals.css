@@ -1,0 +1,332 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Updated color palette for pixel art red/orange theme */
+  --background: #fffbeb;
+  --foreground: #4b5563;
+  --card: #ffffff;
+  --card-foreground: #4b5563;
+  --popover: #ffffff;
+  --popover-foreground: #4b5563;
+  --primary: #ea580c;
+  --primary-foreground: #ffffff;
+  --secondary: #f97316;
+  --secondary-foreground: #ffffff;
+  --muted: #fefce8;
+  --muted-foreground: #4b5563;
+  --accent: #f97316;
+  --accent-foreground: #ffffff;
+  --destructive: #e53e3e;
+  --destructive-foreground: #ffffff;
+  --border: #d1d5db;
+  --input: #ffffff;
+  --ring: rgba(234, 88, 12, 0.5);
+  --chart-1: #ea580c;
+  --chart-2: #f97316;
+  --chart-3: #fbbf24;
+  --chart-4: #fef08a;
+  --chart-5: #fff9c4;
+  --radius: 0.5rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #4b5563;
+  --sidebar-primary: #ea580c;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f97316;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #d1d5db;
+  --sidebar-ring: rgba(234, 88, 12, 0.5);
+}
+
+.dark {
+  /* Updated dark mode colors to maintain pixel art theme */
+  --background: #1a1a1a;
+  --foreground: #ffffff;
+  --card: #2a2a2a;
+  --card-foreground: #ffffff;
+  --popover: #2a2a2a;
+  --popover-foreground: #ffffff;
+  --primary: #f97316;
+  --primary-foreground: #ffffff;
+  --secondary: #ea580c;
+  --secondary-foreground: #ffffff;
+  --muted: #3a3a3a;
+  --muted-foreground: #a1a1aa;
+  --accent: #f97316;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #3a3a3a;
+  --input: #2a2a2a;
+  --ring: rgba(249, 115, 22, 0.5);
+  --chart-1: #f97316;
+  --chart-2: #ea580c;
+  --chart-3: #fbbf24;
+  --chart-4: #fef08a;
+  --chart-5: #fff9c4;
+  --sidebar: #2a2a2a;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #f97316;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ea580c;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #3a3a3a;
+  --sidebar-ring: rgba(249, 115, 22, 0.5);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    /* Added pixel art background pattern */
+    background-image: radial-gradient(circle at 1px 1px, rgba(234, 88, 12, 0.05) 1px, transparent 0);
+    background-size: 20px 20px;
+    image-rendering: pixelated;
+  }
+
+  /* Enhanced pixel art styling for buttons and inputs */
+  .pixel-button {
+    @apply bg-primary text-primary-foreground font-bold py-3 px-6 border-4 border-primary font-mono uppercase tracking-wider;
+    image-rendering: pixelated;
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.3), inset 2px 2px 0px rgba(255, 255, 255, 0.2);
+    transition: all 0.1s ease;
+    /* Added pixel art border pattern */
+    border-image: linear-gradient(45deg, var(--primary) 25%, transparent 25%, transparent 75%, var(--primary) 75%) 4;
+  }
+
+  .pixel-button:hover {
+    @apply bg-accent;
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3), inset 1px 1px 0px rgba(255, 255, 255, 0.3);
+    /* Added glowing effect on hover */
+    filter: brightness(1.1) drop-shadow(0 0 8px rgba(249, 115, 22, 0.4));
+  }
+
+  .pixel-button:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+  }
+
+  .pixel-button:disabled {
+    @apply bg-muted text-muted-foreground;
+    transform: none;
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+    filter: none;
+  }
+
+  .pixel-input {
+    @apply bg-input border-4 border-border px-4 py-3 font-mono;
+    image-rendering: pixelated;
+    box-shadow: inset 4px 4px 0px rgba(0, 0, 0, 0.1), inset -2px -2px 0px rgba(255, 255, 255, 0.1);
+    /* Added pixel art border pattern */
+    border-image: linear-gradient(45deg, var(--border) 25%, transparent 25%, transparent 75%, var(--border) 75%) 4;
+    transition: all 0.2s ease;
+  }
+
+  .pixel-input:focus {
+    @apply border-primary ring-0 outline-none;
+    box-shadow: inset 4px 4px 0px rgba(234, 88, 12, 0.1), 0 0 0 2px rgba(234, 88, 12, 0.2);
+    /* Added focus glow effect */
+    filter: drop-shadow(0 0 4px rgba(234, 88, 12, 0.3));
+  }
+
+  .pixel-card {
+    @apply bg-card border-4 border-border p-6;
+    image-rendering: pixelated;
+    box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.1), inset 2px 2px 0px rgba(255, 255, 255, 0.1);
+    /* Added pixel art corner decorations */
+    position: relative;
+  }
+
+  .pixel-card::before {
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    background: linear-gradient(
+      45deg,
+      var(--primary) 0%,
+      var(--primary) 2px,
+      transparent 2px,
+      transparent 6px,
+      var(--primary) 6px,
+      var(--primary) 8px,
+      transparent 8px
+    );
+    background-size: 8px 8px;
+    z-index: -1;
+    opacity: 0.1;
+  }
+
+  /* Added pixel art progress bar styling */
+  .pixel-progress {
+    @apply bg-muted border-2 border-border;
+    height: 24px;
+    image-rendering: pixelated;
+    box-shadow: inset 2px 2px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  .pixel-progress > div {
+    @apply bg-primary;
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.1) 2px,
+      rgba(255, 255, 255, 0.1) 4px
+    );
+    box-shadow: inset 0 2px 0px rgba(255, 255, 255, 0.2);
+  }
+
+  /* Added pixel art alert styling */
+  .pixel-alert {
+    @apply border-4 p-4 font-mono;
+    image-rendering: pixelated;
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+    background-image: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 8px,
+      rgba(255, 255, 255, 0.05) 8px,
+      rgba(255, 255, 255, 0.05) 16px
+    );
+  }
+
+  /* Added pixel art select styling */
+  .pixel-select {
+    @apply bg-input border-4 border-border font-mono;
+    image-rendering: pixelated;
+    box-shadow: inset 2px 2px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Added pixel art textarea styling */
+  .pixel-textarea {
+    @apply bg-input border-4 border-border p-4 font-mono;
+    image-rendering: pixelated;
+    box-shadow: inset 4px 4px 0px rgba(0, 0, 0, 0.1);
+    resize: none;
+  }
+
+  /* Added pixel art animations */
+  @keyframes pixel-pulse {
+    0%,
+    100% {
+      opacity: 1;
+      filter: brightness(1);
+    }
+    50% {
+      opacity: 0.8;
+      filter: brightness(1.2);
+    }
+  }
+
+  @keyframes pixel-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 5px rgba(234, 88, 12, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(234, 88, 12, 0.6);
+    }
+  }
+
+  .pixel-pulse {
+    animation: pixel-pulse 2s ease-in-out infinite;
+  }
+
+  .pixel-glow {
+    animation: pixel-glow 2s ease-in-out infinite;
+  }
+
+  /* Added pixel art status indicators */
+  .pixel-status-dot {
+    width: 12px;
+    height: 12px;
+    image-rendering: pixelated;
+    box-shadow: inset 2px 2px 0px rgba(255, 255, 255, 0.3), 2px 2px 0px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Added pixel art link styling */
+  .pixel-link {
+    @apply text-primary font-mono underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .pixel-link:hover {
+    @apply text-accent;
+    text-shadow: 1px 1px 0px rgba(249, 115, 22, 0.3);
+    filter: drop-shadow(0 0 4px rgba(249, 115, 22, 0.4));
+  }
+
+  /* Added pixel art scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--muted);
+    border: 2px solid var(--border);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border: 2px solid var(--border);
+    box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.2);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: var(--muted);
+  }
+}

@@ -1,0 +1,199 @@
+/**
+ * Front-end fetch syste,
+ */
+
+const baseApi = "https://api.memeturbo.fun/"
+const request_router = {
+    search:"lts",
+    spot:{
+        pump:"spot/pump",
+        jup:"spot/jup"
+    },
+    leverage:{
+        pump:"leverage/pump",
+        jup:"leverage/jup"
+    },
+    clone:{
+        info:"info",
+        clone:"clone"
+    }
+};
+
+async function requester(url: string, requestOptions: any) {
+  try {
+    return (await fetch(url, requestOptions)).json();
+  } catch (e) {
+    console.log("🐞 req error", e);
+  }
+
+  return false;
+}
+
+function request_method_get(headers: any) {
+  var requestOptions = {
+    method: "GET",
+    headers: headers,
+    redirect: "follow",
+  };
+
+  return requestOptions;
+}
+
+function request_method_post(bodys: any, headers: any) {
+  var requestOptions = {
+    method: "POST",
+    headers: headers,
+    body: bodys,
+    redirect: "follow",
+  };
+
+  return requestOptions;
+}
+
+function request_get_unauth() {
+  return request_method_get({});
+}
+
+function request_post_unauth(data: any) {
+  var h = new Headers();
+
+  h.append("Content-Type", "application/json");
+
+  return request_method_post(JSON.stringify(data), h);
+}
+
+async function api_search(seed?: string) {
+  try {
+    let path = baseApi+request_router.search;
+    if(seed)
+    {
+        path+=`?search=${seed}`
+    }
+    return await requester(
+      path,
+      request_get_unauth(),
+    );
+  } catch (e) {
+    console.error(e);
+
+    return [];
+  }
+}
+
+async function api_pump_spot(mint:string,address:string,amount:string) {
+  try {
+    return await requester(
+      `${baseApi+request_router.spot.pump}`,
+      request_post_unauth(
+        {
+            mint,
+            address,
+            amount
+        }
+      ),
+    );
+  } catch (e) {
+    console.error(e);
+
+    return 0;
+  }
+}
+async function api_jup_spot(mint:string,address:string,amount:string) {
+  try {
+    return await requester(
+      `${baseApi+request_router.spot.jup}`,
+      request_post_unauth(
+        {
+            mint,
+            address,
+            amount
+        }
+      ),
+    );
+  } catch (e) {
+    console.error(e);
+
+    return 0;
+  }
+}
+
+async function api_leverage_pump(mint:string,address:string,amount:string) {
+  try {
+    return await requester(
+      `${baseApi+request_router.leverage.pump}`,
+      request_post_unauth(
+        {
+            mint,
+            address,
+            amount
+        }
+      ),
+    );
+  } catch (e) {
+    console.error(e);
+
+    return 0;
+  }
+}
+
+async function api_leverage_jup(mint:string,address:string,amount:string) {
+  try {
+    return await requester(
+      `${baseApi+request_router.leverage.jup}`,
+      request_post_unauth(
+        {
+            mint,
+            address,
+            amount
+        }
+      ),
+    );
+  } catch (e) {
+    console.error(e);
+
+    return 0;
+  }
+}
+
+async function api_info(seed: string) {
+  try {
+    let path = baseApi+request_router.clone.info;
+    path+=`/${seed}`
+    return await requester(
+      path,
+      request_get_unauth(),
+    );
+  } catch (e) {
+    console.error(e);
+
+    return [];
+  }
+}
+
+async function api_clone(user:string,address:string) {
+  try {
+    let path = baseApi+request_router.clone.clone;
+    path+=`/${address}`
+    return await requester(
+      path,
+      request_post_unauth(
+        {
+            user
+        }
+      ),
+    );
+  } catch (e) {
+    console.error(e);
+
+    return 0;
+  }
+}
+export {
+    api_search,
+    api_pump_spot,
+    api_jup_spot,
+    api_leverage_pump,
+    api_leverage_jup,
+    api_info,
+    api_clone
+};
