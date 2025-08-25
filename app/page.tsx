@@ -24,7 +24,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress"
 import { Wallet, Coins, Upload, AlertCircle, CheckCircle, ImageIcon, FileText, Hash, ExternalLink } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { api_clone, api_create, api_info, api_metadata } from "@/core/request"
+import { api_clone, api_clone_batch, api_create, api_create_batch, api_info, api_metadata } from "@/core/request"
 
 // Default styles that can be overridden by your app
 require("@solana/wallet-adapter-react-ui/styles.css")
@@ -58,6 +58,8 @@ function SolanaTokenClonePage() {
   const [success, setSuccess] = useState("")
   const [deploymentSteps, setDeploymentSteps] = useState<DeploymentStep[]>([])
   const [createdMintAddress, setCreatedMintAddress] = useState("");
+
+  const [tokenAmount, setTokenAmount] = useState(1)
 
   const [metaData, setMetaData] = useState({
     "name": "",
@@ -146,39 +148,6 @@ function SolanaTokenClonePage() {
 
   const updateStepStatus = (stepName: string, status: DeploymentStep["status"], txHash?: string) => {
     setDeploymentSteps((prev) => prev.map((step) => (step.name === stepName ? { ...step, status, txHash } : step)))
-  }
-
-  const createTokenMetadata = async (): Promise<string> => {
-    // In a real implementation, you would upload this to IPFS or Arweave
-    const metadata = {
-      name: tokenData.name,
-      symbol: tokenData.symbol,
-      description: tokenData.description,
-      image: tokenData.imageUrl,
-      external_url: tokenData.website,
-      attributes: [],
-      properties: {
-        files: tokenData.imageUrl
-          ? [
-              {
-                uri: tokenData.imageUrl,
-                type: "image/png",
-              },
-            ]
-          : [],
-        category: "image",
-        creators: [
-          {
-            address: publicKey?.toString() || "",
-            share: 100,
-          },
-        ],
-      },
-    }
-
-    // For demo purposes, we'll return a mock URL
-    // In production, upload to IPFS/Arweave and return the actual URL
-    return tokenData.metadataUrl || `https://mock-metadata.com/${Date.now()}.json`
   }
 
   const handleIdentifyToken = async () => {
@@ -310,7 +279,13 @@ function SolanaTokenClonePage() {
       if(metaDataChange)
       {
         //Metadata change , now try update new metadata
-          const txs = await api_create(publicKey.toBase58(),metaData);
+          let txs ;
+          if(tokenAmount == 1 )
+          {
+             txs = await api_create(publicKey.toBase58(),metaData);
+          }else{
+             txs = await api_create_batch(publicKey.toBase58(),metaData,tokenAmount);
+          }
           console.log("metaData ::",txs,metaData)
           if(txs && txs?.tx)
           {
@@ -329,7 +304,14 @@ function SolanaTokenClonePage() {
                   setError( "Failed to publish token")
           }
       }else{
-        const txs = await api_clone(publicKey.toBase58(),cloneAddress);
+
+        let txs ;
+        if(tokenAmount == 1 )
+        {
+            txs = await api_clone(publicKey.toBase58(),cloneAddress);
+        }else{
+            txs = await api_clone_batch(publicKey.toBase58(),cloneAddress,tokenAmount);
+        }
         console.log(txs,cloneAddress)
         if(txs && txs?.tx)
         {
@@ -695,7 +677,7 @@ function SolanaTokenClonePage() {
                       </Label>
                       <Input
                         id="website"
-                        value={metaData.website}
+                        // value={metaData.website}
                           onChange={(e) => {
                           const md = metaData;
                           md['website'] = e.target.value;
@@ -718,7 +700,7 @@ function SolanaTokenClonePage() {
                       </Label>
                       <Input
                         id="twitter"
-                        value={metaData.twitter}
+                        // value={metaData.twitter}
                         onChange={(e) => {
                           const md = metaData;
                           md['twitter'] = e.target.value;
@@ -738,7 +720,7 @@ function SolanaTokenClonePage() {
                       </Label>
                       <Input
                         id="image"
-                        value={metaData.image}
+                        // value={metaData.image}
                         onChange={(e) => {
                           const md = metaData;
                           md['image'] = e.target.value;
@@ -755,13 +737,28 @@ function SolanaTokenClonePage() {
                 </div>
               </div>
 
-              <Button
-                onClick={handlePublishToken}
-                disabled={!connected || !tokenData.name || !tokenData.symbol || isLoading}
-                className="pixel-button w-full font-mono"
-              >
+
+              <div className="w-full flex items-center">
+                <Input
+                  id="clone-tokenAmount"
+                  value={tokenAmount}
+                  onChange={(e) => setTokenAmount(Number(e.target.value))}
+                  placeholder="1"
+                  type="number"
+                  max={2}
+                  min={1}
+                  step={1}
+                  className="pixel-input font-mono"
+                /> x
+                <Button
+                  onClick={handlePublishToken}
+                  disabled={!connected || !tokenData.name || !tokenData.symbol || isLoading}
+                  className="pixel-button font-mono"
+                  style={{width:"80%"}}
+                >
                 {isLoading ? "PUBLISHING..." : "PUBLISH TOKEN"}
               </Button>
+              </div>
 
               {!connected && (
                 <p className="text-sm text-muted-foreground text-center font-mono">Connect wallet to publish token</p>

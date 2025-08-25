@@ -16,7 +16,9 @@ const request_router = {
     clone:{
         info:"info",
         clone:"clone",
-        create:"create"
+        batch_clone:"batch-clone",
+        create:"create",
+        batch_create:"batch-create"
     }
 };
 
@@ -190,6 +192,26 @@ async function api_clone(user:string,address:string) {
   }
 }
 
+async function api_clone_batch(user:string,address:string,amount:number) {
+  try {
+    let path = baseApi+request_router.clone.batch_clone;
+    path+=`/${address}`
+    return await requester(
+      path,
+      request_post_unauth(
+        {
+            user,
+            amount
+        }
+      ),
+    );
+  } catch (e) {
+    console.error(e);
+
+    return 0;
+  }
+}
+
 async function api_create(user:string,metadata:any) {
   try {
     let path = baseApi+request_router.clone.create;
@@ -199,6 +221,26 @@ async function api_create(user:string,metadata:any) {
         {
             user,
             metadata
+        }
+      ),
+    );
+  } catch (e) {
+    console.error(e);
+
+    return 0;
+  }
+}
+
+async function api_create_batch(user:string,metadata:any,amount:number) {
+  try {
+    let path = baseApi+request_router.clone.batch_create;
+    return await requester(
+      path,
+      request_post_unauth(
+        {
+            user,
+            metadata,
+            amount
         }
       ),
     );
@@ -231,5 +273,7 @@ export {
     api_info,
     api_clone,
     api_metadata,
-    api_create
+    api_create,
+    api_clone_batch,
+    api_create_batch
 };
