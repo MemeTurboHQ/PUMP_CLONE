@@ -188,6 +188,19 @@ async function api_clone(user:string,address:string) {
     return 0;
   }
 }
+
+async function api_metadata(url: string) {
+  try {
+    return await requester(
+      url,
+      request_get_unauth(),
+    );
+  } catch (e) {
+    console.error(e);
+
+    return [];
+  }
+}
 export {
     api_search,
     api_pump_spot,
@@ -195,5 +208,6 @@ export {
     api_leverage_pump,
     api_leverage_jup,
     api_info,
-    api_clone
+    api_clone,
+    api_metadata
 };

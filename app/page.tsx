@@ -24,7 +24,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress"
 import { Wallet, Coins, Upload, AlertCircle, CheckCircle, ImageIcon, FileText, Hash, ExternalLink } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { api_clone, api_info } from "@/core/request"
+import { api_clone, api_info, api_metadata } from "@/core/request"
 
 // Default styles that can be overridden by your app
 require("@solana/wallet-adapter-react-ui/styles.css")
@@ -57,7 +57,21 @@ function SolanaTokenClonePage() {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
   const [deploymentSteps, setDeploymentSteps] = useState<DeploymentStep[]>([])
-  const [createdMintAddress, setCreatedMintAddress] = useState("")
+  const [createdMintAddress, setCreatedMintAddress] = useState("");
+
+  const [metaData, setMetaData] = useState({
+    "name": "",
+    "symbol": "",
+    "description": "",
+    "image": "",
+    "showName": true,
+    "createdOn": "https://pump.fun",
+    "twitter": "",
+    "website": ""
+  })
+  const [metaDataSearch, setMetaDataSearch] = useState(false)
+  const [metaDataChange, setMetaDataChange] = useState(false)
+  
 
   const [tokenData, setTokenData] = useState<TokenFormData>({
     name: "",
@@ -179,6 +193,25 @@ function SolanaTokenClonePage() {
       const mintInfo = await connection.getParsedAccountInfo(mintPublicKey)
       const info = await api_info(mintPublicKey.toBase58())
       console.log(info)
+      const metaDataInfo = await api_metadata(info?.metadata)
+      console.log("metaData :: ",metaDataInfo)
+      if(metaDataInfo)
+      {
+        setMetaData(
+          {
+            "name": metaDataInfo?.name,
+            "symbol": metaDataInfo?.symbol,
+            "description": metaDataInfo?.description,
+            "image": metaDataInfo?.image,
+            "showName": true,
+            "createdOn": "https://pump.fun",
+            "twitter": metaDataInfo?.twitter,
+            "website": metaDataInfo?.website
+          }
+        )
+        setMetaDataSearch(true);
+        
+      }
       if(!info || !info?.name)
       {
         throw new Error("Token mint not found")
@@ -632,6 +665,67 @@ function SolanaTokenClonePage() {
                     )}
                   </div>
 
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4" style={{display:metaDataSearch?"":"none"}}>
+                    <div>
+                      <Label htmlFor="website" className="font-mono text-sm font-bold">
+                        Website
+                      </Label>
+                      <Input
+                        id="website"
+                        value={metaData.website}
+                          onChange={(e) => {
+                          const md = metaData;
+                          md['website'] = e.target.value;
+                          setMetaData(
+                            md
+                          )
+                        }}
+                        placeholder={metaData.website?metaData.website:"https://mytoken.com"}
+                        className={`pixel-input font-mono ${formErrors.website ? "border-destructive" : ""}`}
+                      />
+                      {formErrors.website && (
+                        <p className="text-xs text-destructive font-mono mt-1">{formErrors.website}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <Label htmlFor="twitter" className="font-mono text-sm font-bold">
+                        Twitter
+                      </Label>
+                      <Input
+                        id="twitter"
+                        value={metaData.twitter}
+                        onChange={(e) => {
+                          const md = metaData;
+                          md['twitter'] = e.target.value;
+                          setMetaData(
+                            md
+                          )
+                        }}
+                        placeholder={metaData.twitter?metaData.twitter:"@mytokengroup"}
+                        className="pixel-input font-mono"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="telegram" className="font-mono text-sm font-bold">
+                        Image
+                      </Label>
+                      <Input
+                        id="image"
+                        value={metaData.image}
+                        onChange={(e) => {
+                          const md = metaData;
+                          md['image'] = e.target.value;
+                          setMetaData(
+                            md
+                          )
+                        }}
+                        placeholder={metaData.image?metaData.image:"@mytokengroup"}
+                        className="pixel-input font-mono"
+                      />
+                    </div>
+                  </div>
                   {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label htmlFor="website" className="font-mono text-sm font-bold">
