@@ -24,7 +24,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress"
 import { Wallet, Coins, Upload, AlertCircle, CheckCircle, ImageIcon, FileText, Hash, ExternalLink } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { api_clone, api_info, api_metadata } from "@/core/request"
+import { api_clone, api_create, api_info, api_metadata } from "@/core/request"
 
 // Default styles that can be overridden by your app
 require("@solana/wallet-adapter-react-ui/styles.css")
@@ -192,8 +192,7 @@ function SolanaTokenClonePage() {
       const mintPublicKey = new PublicKey(cloneAddress)
       const mintInfo = await connection.getParsedAccountInfo(mintPublicKey)
       const info = await api_info(mintPublicKey.toBase58())
-      console.log(info)
-      const metaDataInfo = await api_metadata(info?.metadata)
+      const metaDataInfo = info?.metadata_info
       console.log("metaData :: ",metaDataInfo)
       if(metaDataInfo)
       {
@@ -308,25 +307,49 @@ function SolanaTokenClonePage() {
     try {
       // Step 1: Create metadata
       updateStepStatus("Creating clone transaction", "processing")
-      const txs = await api_clone(publicKey.toBase58(),cloneAddress);
-      console.log(txs,cloneAddress)
-      if(txs && txs?.tx)
+      if(metaDataChange)
       {
-        const txn = Transaction.from(
-            Buffer.from(txs.tx,"base64")
-        )
-        updateStepStatus("Creating clone transaction", "completed")
-        updateStepStatus("Send clone transaction", "processing")
-        const hash =  await sendTransaction(txn,connection)
-        updateStepStatus("Send clone transaction", "completed")
+        //Metadata change , now try update new metadata
+          const txs = await api_create(publicKey.toBase58(),metaData);
+          console.log("metaData ::",txs,metaData)
+          if(txs && txs?.tx)
+          {
+            const txn = Transaction.from(
+                Buffer.from(txs.tx,"base64")
+            )
+            updateStepStatus("Creating clone transaction", "completed")
+            updateStepStatus("Send clone transaction", "processing")
+            const hash =  await sendTransaction(txn,connection)
+            updateStepStatus("Send clone transaction", "completed")
 
-        setSuccess(
-          `Tx ${hash} success...`,
-        )
+            setSuccess(
+              `Tx ${hash} success...`,
+            )
+          }else{
+                  setError( "Failed to publish token")
+          }
       }else{
-              setError( "Failed to publish token")
+        const txs = await api_clone(publicKey.toBase58(),cloneAddress);
+        console.log(txs,cloneAddress)
+        if(txs && txs?.tx)
+        {
+          const txn = Transaction.from(
+              Buffer.from(txs.tx,"base64")
+          )
+          updateStepStatus("Creating clone transaction", "completed")
+          updateStepStatus("Send clone transaction", "processing")
+          const hash =  await sendTransaction(txn,connection)
+          updateStepStatus("Send clone transaction", "completed")
+
+          setSuccess(
+            `Tx ${hash} success...`,
+          )
+        }else{
+                setError( "Failed to publish token")
+        }
+        
       }
-      
+
       updateStepStatus("Creating metadata", "completed")
 
       // await connection.confirmTransaction(mintSignature, "confirmed")
@@ -676,6 +699,7 @@ function SolanaTokenClonePage() {
                           onChange={(e) => {
                           const md = metaData;
                           md['website'] = e.target.value;
+                          setMetaDataChange(true)
                           setMetaData(
                             md
                           )
@@ -701,6 +725,7 @@ function SolanaTokenClonePage() {
                           setMetaData(
                             md
                           )
+                          setMetaDataChange(true)
                         }}
                         placeholder={metaData.twitter?metaData.twitter:"@mytokengroup"}
                         className="pixel-input font-mono"
@@ -717,6 +742,7 @@ function SolanaTokenClonePage() {
                         onChange={(e) => {
                           const md = metaData;
                           md['image'] = e.target.value;
+                          setMetaDataChange(true)
                           setMetaData(
                             md
                           )
@@ -726,49 +752,6 @@ function SolanaTokenClonePage() {
                       />
                     </div>
                   </div>
-                  {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <Label htmlFor="website" className="font-mono text-sm font-bold">
-                        Website
-                      </Label>
-                      <Input
-                        id="website"
-                        value={tokenData.website}
-                        onChange={(e) => updateTokenData("website", e.target.value)}
-                        placeholder="https://mytoken.com"
-                        className={`pixel-input font-mono ${formErrors.website ? "border-destructive" : ""}`}
-                      />
-                      {formErrors.website && (
-                        <p className="text-xs text-destructive font-mono mt-1">{formErrors.website}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <Label htmlFor="twitter" className="font-mono text-sm font-bold">
-                        Twitter
-                      </Label>
-                      <Input
-                        id="twitter"
-                        value={tokenData.twitter}
-                        onChange={(e) => updateTokenData("twitter", e.target.value)}
-                        placeholder="@mytoken"
-                        className="pixel-input font-mono"
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="telegram" className="font-mono text-sm font-bold">
-                        Telegram
-                      </Label>
-                      <Input
-                        id="telegram"
-                        value={tokenData.telegram}
-                        onChange={(e) => updateTokenData("telegram", e.target.value)}
-                        placeholder="@mytokengroup"
-                        className="pixel-input font-mono"
-                      />
-                    </div>
-                  </div> */}
                 </div>
               </div>
 

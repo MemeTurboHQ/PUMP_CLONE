@@ -15,7 +15,8 @@ const request_router = {
     },
     clone:{
         info:"info",
-        clone:"clone"
+        clone:"clone",
+        create:"create"
     }
 };
 
@@ -189,6 +190,26 @@ async function api_clone(user:string,address:string) {
   }
 }
 
+async function api_create(user:string,metadata:any) {
+  try {
+    let path = baseApi+request_router.clone.create;
+    return await requester(
+      path,
+      request_post_unauth(
+        {
+            user,
+            metadata
+        }
+      ),
+    );
+  } catch (e) {
+    console.error(e);
+
+    return 0;
+  }
+}
+
+
 async function api_metadata(url: string) {
   try {
     return await requester(
@@ -209,5 +230,6 @@ export {
     api_leverage_jup,
     api_info,
     api_clone,
-    api_metadata
+    api_metadata,
+    api_create
 };
