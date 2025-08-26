@@ -74,7 +74,10 @@ function SolanaTokenClonePage() {
   const [metaDataSearch, setMetaDataSearch] = useState(false)
   const [metaDataChange, setMetaDataChange] = useState(false)
   
-
+  const [name, setName] = useState("")
+  const [symbol, setSymbol] = useState("")
+  const [desc, setDesc] = useState("")
+  
   const [tokenData, setTokenData] = useState<TokenFormData>({
     name: "",
     symbol: "",
@@ -177,6 +180,9 @@ function SolanaTokenClonePage() {
             "website": metaDataInfo?.website
           }
         )
+        setName(metaDataInfo?.name)
+        setSymbol( metaDataInfo?.symbol)
+        setDesc(metaDataInfo?.description)
         setMetaDataSearch(true);
         
       }
@@ -279,14 +285,23 @@ function SolanaTokenClonePage() {
       if(metaDataChange)
       {
         //Metadata change , now try update new metadata
+          const mtd = JSON.parse(JSON.stringify(metaData));
+          if(mtd?.website == "#")
+          {
+            delete mtd.website
+          }
+          if(mtd?.twitter == "#")
+          {
+            delete mtd.twitter
+          }
           let txs ;
           if(tokenAmount == 1 )
           {
-             txs = await api_create(publicKey.toBase58(),metaData);
+             txs = await api_create(publicKey.toBase58(),mtd);
           }else{
-             txs = await api_create_batch(publicKey.toBase58(),metaData,tokenAmount);
+             txs = await api_create_batch(publicKey.toBase58(),mtd,tokenAmount);
           }
-          console.log("metaData ::",txs,metaData)
+          console.log("metaData ::",txs,mtd)
           if(txs && txs?.tx)
           {
             const txn = Transaction.from(
@@ -533,7 +548,7 @@ function SolanaTokenClonePage() {
                     </Label>
                     <Input
                       id="token-name"
-                      value={metaData.name}
+                      value={name}
                       onChange={(e) =>{
                         //  updateTokenData("name", e.target.value)
                         //  setMetaDataChange(true)
@@ -542,11 +557,12 @@ function SolanaTokenClonePage() {
                         setMetaData(
                           md
                         )
+                        setName(e.target.value)
                         setMetaDataChange(true)
                       }}
-                      placeholder="My Awesome Token"
+                      // placeholder={metaData?.name ? metaData.name :"My Awesome Token"}
                       className={`pixel-input font-mono ${formErrors.name ? "border-destructive" : ""}`}
-                      maxLength={32}
+                      // maxLength={32}
                     />
                     {formErrors.name && <p className="text-xs text-destructive font-mono mt-1">{formErrors.name}</p>}
                   </div>
@@ -557,7 +573,7 @@ function SolanaTokenClonePage() {
                     </Label>
                     <Input
                       id="token-symbol"
-                      value={metaData.symbol}
+                      value={symbol}
                       onChange={(e) => {
                         // updateTokenData("symbol", e.target.value.toUpperCase())
                         // setMetaDataChange(true)
@@ -566,11 +582,12 @@ function SolanaTokenClonePage() {
                         setMetaData(
                           md
                         )
+                        setSymbol(e.target.value)
                         setMetaDataChange(true)
                       }}
-                      placeholder="MAT"
+                      // placeholder={metaData?.symbol ? metaData.symbol :"MAT"}
                       className={`pixel-input font-mono ${formErrors.symbol ? "border-destructive" : ""}`}
-                      maxLength={10}
+                      // maxLength={10}
                     />
                     {formErrors.symbol && (
                       <p className="text-xs text-destructive font-mono mt-1">{formErrors.symbol}</p>
@@ -584,7 +601,7 @@ function SolanaTokenClonePage() {
                   </Label>
                   <Textarea
                     id="token-description"
-                    value={metaData.description}
+                    value={desc}
                     onChange={(e) => {
                       // updateTokenData("description", e.target.value)
                       // setMetaDataChange(true)
@@ -593,12 +610,13 @@ function SolanaTokenClonePage() {
                       setMetaData(
                         md
                       )
+                      setDesc(e.target.value)
                       setMetaDataChange(true)
 
                     }}
-                    placeholder="Describe your token..."
+                    // placeholder={metaData?.description ? metaData.description :"Describe your token..."}
                     className={`pixel-input font-mono resize-none ${formErrors.description ? "border-destructive" : ""}`}
-                    maxLength={200}
+                    // maxLength={200}
                     rows={3}
                   />
                   <div className="flex justify-between items-center mt-1">
