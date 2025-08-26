@@ -533,10 +533,16 @@ function SolanaTokenClonePage() {
                     </Label>
                     <Input
                       id="token-name"
-                      value={tokenData.name}
+                      value={metaData.name}
                       onChange={(e) =>{
-                         updateTokenData("name", e.target.value)
-                         setMetaDataChange(true)
+                        //  updateTokenData("name", e.target.value)
+                        //  setMetaDataChange(true)
+                        const md = metaData;
+                        md['name'] = e.target.value;
+                        setMetaData(
+                          md
+                        )
+                        setMetaDataChange(true)
                       }}
                       placeholder="My Awesome Token"
                       className={`pixel-input font-mono ${formErrors.name ? "border-destructive" : ""}`}
@@ -551,9 +557,15 @@ function SolanaTokenClonePage() {
                     </Label>
                     <Input
                       id="token-symbol"
-                      value={tokenData.symbol}
+                      value={metaData.symbol}
                       onChange={(e) => {
-                        updateTokenData("symbol", e.target.value.toUpperCase())
+                        // updateTokenData("symbol", e.target.value.toUpperCase())
+                        // setMetaDataChange(true)
+                        const md = metaData;
+                        md['symbol'] = e.target.value;
+                        setMetaData(
+                          md
+                        )
                         setMetaDataChange(true)
                       }}
                       placeholder="MAT"
@@ -572,10 +584,17 @@ function SolanaTokenClonePage() {
                   </Label>
                   <Textarea
                     id="token-description"
-                    value={tokenData.description}
+                    value={metaData.description}
                     onChange={(e) => {
-                      updateTokenData("description", e.target.value)
+                      // updateTokenData("description", e.target.value)
+                      // setMetaDataChange(true)
+                      const md = metaData;
+                      md['description'] = e.target.value;
+                      setMetaData(
+                        md
+                      )
                       setMetaDataChange(true)
+
                     }}
                     placeholder="Describe your token..."
                     className={`pixel-input font-mono resize-none ${formErrors.description ? "border-destructive" : ""}`}
