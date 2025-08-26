@@ -534,7 +534,10 @@ function SolanaTokenClonePage() {
                     <Input
                       id="token-name"
                       value={tokenData.name}
-                      onChange={(e) => updateTokenData("name", e.target.value)}
+                      onChange={(e) =>{
+                         updateTokenData("name", e.target.value)
+                         setMetaDataChange(true)
+                      }}
                       placeholder="My Awesome Token"
                       className={`pixel-input font-mono ${formErrors.name ? "border-destructive" : ""}`}
                       maxLength={32}
@@ -549,7 +552,10 @@ function SolanaTokenClonePage() {
                     <Input
                       id="token-symbol"
                       value={tokenData.symbol}
-                      onChange={(e) => updateTokenData("symbol", e.target.value.toUpperCase())}
+                      onChange={(e) => {
+                        updateTokenData("symbol", e.target.value.toUpperCase())
+                        setMetaDataChange(true)
+                      }}
                       placeholder="MAT"
                       className={`pixel-input font-mono ${formErrors.symbol ? "border-destructive" : ""}`}
                       maxLength={10}
@@ -567,7 +573,10 @@ function SolanaTokenClonePage() {
                   <Textarea
                     id="token-description"
                     value={tokenData.description}
-                    onChange={(e) => updateTokenData("description", e.target.value)}
+                    onChange={(e) => {
+                      updateTokenData("description", e.target.value)
+                      setMetaDataChange(true)
+                    }}
                     placeholder="Describe your token..."
                     className={`pixel-input font-mono resize-none ${formErrors.description ? "border-destructive" : ""}`}
                     maxLength={200}

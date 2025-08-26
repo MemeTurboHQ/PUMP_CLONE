@@ -4,9 +4,9 @@ import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.app',
+  title: 'PUMP TOKEN CLONE',
+  description: 'CLONE YOUR PUMP TOKEN',
+  generator: 'PC',
 }
 
 export default function RootLayout({
