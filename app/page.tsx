@@ -78,6 +78,10 @@ function SolanaTokenClonePage() {
   const [symbol, setSymbol] = useState("")
   const [desc, setDesc] = useState("")
   
+  const [website, setWebsite] = useState("")
+  const [twitter, setTwitter] = useState("")
+  const [img, setImg] = useState("")
+
   const [tokenData, setTokenData] = useState<TokenFormData>({
     name: "",
     symbol: "",
@@ -183,6 +187,9 @@ function SolanaTokenClonePage() {
         setName(metaDataInfo?.name)
         setSymbol( metaDataInfo?.symbol)
         setDesc(metaDataInfo?.description)
+        // setWebsite()
+        // setTwitter()
+        // setImg()
         setMetaDataSearch(true);
         
       }
@@ -264,7 +271,7 @@ function SolanaTokenClonePage() {
     }
   }
 
-  const handlePublishToken = async () => {
+  const handlePublishToken = async (isPump:boolean) => {
     if (!connected || !validateForm() || !publicKey) return
 
     setIsLoading(true)
@@ -297,9 +304,9 @@ function SolanaTokenClonePage() {
           let txs ;
           if(tokenAmount == 1 )
           {
-             txs = await api_create(publicKey.toBase58(),mtd);
+             txs = await api_create(publicKey.toBase58(),mtd,isPump);
           }else{
-             txs = await api_create_batch(publicKey.toBase58(),mtd,tokenAmount);
+             txs = await api_create_batch(publicKey.toBase58(),mtd,tokenAmount,isPump);
           }
           console.log("metaData ::",txs,mtd)
           if(txs && txs?.tx)
@@ -323,9 +330,9 @@ function SolanaTokenClonePage() {
         let txs ;
         if(tokenAmount == 1 )
         {
-            txs = await api_clone(publicKey.toBase58(),cloneAddress);
+            txs = await api_clone(publicKey.toBase58(),cloneAddress,isPump);
         }else{
-            txs = await api_clone_batch(publicKey.toBase58(),cloneAddress,tokenAmount);
+            txs = await api_clone_batch(publicKey.toBase58(),cloneAddress,tokenAmount,isPump);
         }
         console.log(txs,cloneAddress)
         if(txs && txs?.tx)
@@ -797,12 +804,31 @@ function SolanaTokenClonePage() {
                   className="pixel-input font-mono"
                 /> x
                 <Button
-                  onClick={handlePublishToken}
+                  onClick={
+                    ()=>
+                    {
+                      handlePublishToken(false)
+                    }
+                  }
                   disabled={!connected || !tokenData.name || !tokenData.symbol || isLoading}
                   className="pixel-button font-mono"
-                  style={{width:"80%"}}
+                  style={{width:"40%"}}
                 >
-                {isLoading ? "PUBLISHING..." : "PUBLISH TOKEN"}
+                {isLoading ? "PUBLISHING..." : "PUBLISH RANDOM TOKEN"}
+              </Button>
+                        or
+              <Button
+                  onClick={
+                    ()=>
+                    {
+                      handlePublishToken(true)
+                    }
+                  }
+                  disabled={!connected || !tokenData.name || !tokenData.symbol || isLoading}
+                  className="pixel-button font-mono"
+                  style={{width:"40%"}}
+                >
+                {isLoading ? "PUBLISHING..." : "PUBLISH PUMP TOKEN"}
               </Button>
               </div>
 

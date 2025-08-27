@@ -173,7 +173,7 @@ async function api_info(seed: string) {
   }
 }
 
-async function api_clone(user:string,address:string) {
+async function api_clone(user:string,address:string,isPump:boolean) {
   try {
     let path = baseApi+request_router.clone.clone;
     path+=`/${address}`
@@ -181,7 +181,8 @@ async function api_clone(user:string,address:string) {
       path,
       request_post_unauth(
         {
-            user
+            user,
+            isPump
         }
       ),
     );
@@ -192,7 +193,7 @@ async function api_clone(user:string,address:string) {
   }
 }
 
-async function api_clone_batch(user:string,address:string,amount:number) {
+async function api_clone_batch(user:string,address:string,amount:number,isPump:boolean) {
   try {
     let path = baseApi+request_router.clone.batch_clone;
     path+=`/${address}`
@@ -201,7 +202,8 @@ async function api_clone_batch(user:string,address:string,amount:number) {
       request_post_unauth(
         {
             user,
-            amount
+            amount,
+            isPump
         }
       ),
     );
@@ -212,7 +214,7 @@ async function api_clone_batch(user:string,address:string,amount:number) {
   }
 }
 
-async function api_create(user:string,metadata:any) {
+async function api_create(user:string,metadata:any,isPump:boolean) {
   try {
     let path = baseApi+request_router.clone.create;
     return await requester(
@@ -220,7 +222,8 @@ async function api_create(user:string,metadata:any) {
       request_post_unauth(
         {
             user,
-            metadata
+            metadata,
+            isPump
         }
       ),
     );
@@ -231,7 +234,7 @@ async function api_create(user:string,metadata:any) {
   }
 }
 
-async function api_create_batch(user:string,metadata:any,amount:number) {
+async function api_create_batch(user:string,metadata:any,amount:number,isPump:boolean) {
   try {
     let path = baseApi+request_router.clone.batch_create;
     return await requester(
@@ -240,7 +243,8 @@ async function api_create_batch(user:string,metadata:any,amount:number) {
         {
             user,
             metadata,
-            amount
+            amount,
+            isPump
         }
       ),
     );
